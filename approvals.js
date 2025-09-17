@@ -126,7 +126,7 @@ window.onload = function() {
                 localStorage.clear();
 
                 // Redirect to signup page
-                window.location.href = "signup.html";
+                window.location.href = "index.html";
             } else {
                 // User canceled logout
                 return;

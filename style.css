@@ -605,3 +605,111 @@ button:active {
 .main > * {
     animation: fadeIn 0.5s ease-out;
 }
+
+/* Tablet Screens */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .main {
+        margin-left: 200px;
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    .card h3 {
+        font-size: 14px;
+    }
+
+    .stat {
+        font-size: 20px;
+    }
+}
+
+/* Mobile Screens */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 10px;
+    }
+
+    .sidebar img {
+        display: none; /* Hide profile image on small screens */
+    }
+
+    .menu {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .menu a {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .approval-filters,
+    .report-filters,
+    .support-options {
+        grid-template-columns: 1fr;
+    }
+
+    .report-table th,
+    .report-table td {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    button,
+    .action-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Extra Small Screens */
+@media (max-width: 480px) {
+    h2 {
+        font-size: 20px;
+    }
+
+    .stat {
+        font-size: 18px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 13px;
+        padding: 10px;
+    }
+
+    .logout-container {
+        text-align: center;
+    }
+
+    .logout-btn {
+        width: 100%;
+    }
+}
