@@ -555,161 +555,46 @@ button:active {
     margin: 20px 0;
 }
 
-/* Responsive Design */
+/* Toggle Button */
+.toggle-btn {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    font-size: 24px;
+    background: #31473A;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+/* Sidebar hidden on mobile */
+.sidebar {
+    transition: transform 0.3s ease-in-out;
+}
+
+.sidebar.closed {
+    transform: translateX(-100%);
+}
+
+/* Show toggle button on small screens */
 @media (max-width: 768px) {
+    .toggle-btn {
+        display: block;
+    }
+
     .sidebar {
-        width: 100%;
-        height: auto;
-        position: static;
-    }
-    
-    .main {
-        margin-left: 0;
-        padding: 15px;
-    }
-    
-    .container {
-        flex-direction: column;
-    }
-    
-    .dashboard-cards {
-        grid-template-columns: 1fr;
-    }
-    
-    .approval-filters {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .report-filters {
-        grid-template-columns: 1fr;
-    }
-    
-    .support-options {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.main > * {
-    animation: fadeIn 0.5s ease-out;
-}
-
-/* Tablet Screens */
-@media (max-width: 1024px) {
-    .sidebar {
-        width: 200px;
-    }
-
-    .main {
-        margin-left: 200px;
-        padding: 20px;
-    }
-
-    h2 {
-        font-size: 24px;
-    }
-
-    .card h3 {
-        font-size: 14px;
-    }
-
-    .stat {
-        font-size: 20px;
-    }
-}
-
-/* Mobile Screens */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: static;
-        flex-direction: row;
-        justify-content: space-around;
-        padding: 10px;
-    }
-
-    .sidebar img {
-        display: none; /* Hide profile image on small screens */
-    }
-
-    .menu {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .menu a {
-        padding: 10px;
-        font-size: 14px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        z-index: 999;
     }
 
     .main {
         margin-left: 0;
-        padding: 15px;
-    }
-
-    .dashboard-cards {
-        grid-template-columns: 1fr;
-    }
-
-    .approval-filters,
-    .report-filters,
-    .support-options {
-        grid-template-columns: 1fr;
-    }
-
-    .report-table th,
-    .report-table td {
-        font-size: 12px;
-        padding: 8px;
-    }
-
-    button,
-    .action-btn {
-        width: 100%;
-        text-align: center;
-    }
-}
-
-/* Extra Small Screens */
-@media (max-width: 480px) {
-    h2 {
-        font-size: 20px;
-    }
-
-    .stat {
-        font-size: 18px;
-    }
-
-    .card {
-        padding: 15px;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        font-size: 13px;
-        padding: 10px;
-    }
-
-    .logout-container {
-        text-align: center;
-    }
-
-    .logout-btn {
-        width: 100%;
+        padding-top: 60px; /* space for toggle button */
     }
 }

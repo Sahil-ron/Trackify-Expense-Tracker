@@ -59,6 +59,14 @@
             document.getElementById('date').value = new Date().toISOString().split('T')[0];
         });
 
+        //toggle
+
+const toggleBtn = document.getElementById("toggleBtn");
+const sidebar = document.querySelector(".sidebar");
+
+toggleBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("closed");
+});
         //logout
         function logout() {
             let confirmLogout = confirm("Are you sure you want to log out?");
