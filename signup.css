@@ -8,7 +8,7 @@
 
 /* Background */
 body {
-  background: url("back5.jpg");
+  background: url("back4.jpg");
   background-repeat: no-repeat;
   background-size: 100vw 100vh;
   height: 100vh;
@@ -28,6 +28,24 @@ form {
   backdrop-filter: blur(10px); /* glass effect */
 }
 
+.password-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-container input {
+      width: 100%;
+      padding-right: 40px; /* space for eye button */
+    }
+
+    .toggle-eye {
+      position: absolute;
+      right: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      color: #444;
+    }
 /* Hover effect */
 form:hover {
   transform: translateY(-5px);

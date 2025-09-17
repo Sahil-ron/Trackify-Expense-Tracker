@@ -20,10 +20,15 @@
             <input type="email" name="mail" id="mail">
             <span id="mailError" class="error"></span>
             <br>
+
             <label for="pass">Password</label>
-            <input type="text" name="pass" id="pass">
+            <div class="password-container">
+                <input type="password" name="pass" id="pass">
+                <span class="toggle-eye" onclick="togglePassword('pass', this)">👁️</span>
+            </div>
             <span id="passError" class="error"></span>
             <br>
+
             <div id="btns">
                 <button type="submit">Login</button>
                 <button type="reset">Cancel</button>
@@ -60,10 +65,21 @@
 
             if (valid) {
                 alert("login is Successfull");
-                location.href = "index.html"
+                location.href = "home.html"
             }
 
         });
+
+        function togglePassword(fieldId, eyeIcon) {
+            const field = document.getElementById(fieldId);
+            if (field.type === "password") {
+                field.type = "text";
+                eyeIcon.textContent = "🙈"; // show as open
+            } else {
+                field.type = "password";
+                eyeIcon.textContent = "👁️"; // hide again
+            }
+        }
     </script>
 </body>
 
