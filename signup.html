@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support - Expense Tracker</title>
+  <link rel="stylesheet" href="signup.css">
+  <link rel="shortcut icon" href="logo.webp" type="image/x-icon">
+</head>
+
+<body>
+  <form action="">
+    <div>
+      <h1>Signup</h1>
+    </div>
+    <div>
+      <label for="user">Username</label>
+      <input type="text" id="user" name="user" />
+      <span id="userError" class="error"></span>
+      <br />
+      <label for="pass">Password</label>
+      <input type="text" id="pass" name="pass" />
+      <span id="passError" class="error"></span>
+      <br />
+      <label for="">confirm password</label>
+      <input type="text" id="cPass" name="cPass">
+      <span id="cPassError" class="error"></span>
+      <br>
+      <label for="mail">Email-ID</label>
+      <input type="email" id="mail" name="mail" />
+      <span id="mailError" class="error"></span>
+      <br />
+      <label for="num">Number</label>
+      <input type="tel" id="num" name="num" />
+      <span id="numError" class="error"></span>
+      <br />
+      <div id="btns">
+        <button type="submit">signIn</button>
+        <button type="reset">Cancel</button>
+      </div>
+
+    </div>
+  </form>
+
+  <script>
+
+
+
+
+    let form = document.querySelector("form");
+    form.addEventListener("submit", (e) => {
+
+      // let user = document.getElementById('user').value;
+      // let pass = document.getElementById('pass').value;
+      // let mail = document.getElementById('mail').value;
+      // let num = document.getElementById('num').value;
+
+      // let numError=document.getElementById('numError');
+
+      // numError.textContent="";
+
+      // if (num.length<3) {
+      //     numError.textContent="contain more than 3 characters"
+      //     return;
+      // }
+
+      //     let validName = /^[a-zA-Z0-9]$^/
+      //     let validNum = /^[0-9]{10,}$^/
+
+      //     if (user === '') {
+      //         alert('name is mandatory');
+      //         e.preventDefault();
+      //         return;
+      //     }
+
+      //     if (!validName.test()) {
+      //         alert('name should consist of uppecase,lowercase and numbers')
+      //         e.preventDefault();
+      //         return;
+      //     }
+
+      // })
+      // if (num.length < 6) {
+      //         alert('num should be minimum 6 characters')
+      //         e.preventDefault();
+      //         return;
+      //     }
+
+      //     if (!validNum.test()) {
+      //         alert('invalid number ')
+      //         e.preventDefault();
+      //         return;
+      //     }
+
+      // targeting the html elements
+      let name = document.getElementById("user").value.trim();
+      let pass = document.getElementById("pass").value.trim();
+      let mail = document.getElementById("mail").value.trim();
+      let num = document.getElementById("num").value.trim();
+      let cpass = document.getElementById('cPass').value.trim()
+
+      // clear the error
+      document.getElementById("userError").innerText = "";
+      document.getElementById("mailError").innerText = "";
+      document.getElementById("passError").innerText = "";
+      document.getElementById("numError").innerText = "";
+      document.getElementById("cPassError").innerText = "";
+
+
+      let valid = true;
+      e.preventDefault();
+
+      if (name === "") {
+        document.getElementById("userError").innerText =
+          "username is mandatory";
+        valid = false;
+      }
+
+      if (name.length < 3 || name.length > 15) {
+        document.getElementById("userError").innerText =
+          "username must be between 3 to 15 characters";
+        valid = false;
+      }
+
+      // if (name.length < 3) {
+      //   document.getElementById("userError").innerText =
+      //     "name should contain minimum 3 characters";
+      //   valid = false;
+      // }
+      // if (name.length > 15) {
+      //   document.getElementById("userError").innerText =
+      //     "name should not exceed 15 characters";
+      //   valid = false;
+      // }
+
+      if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(name)) {
+        document.getElementById("userError").innerText =
+          "username should contain uppercase lowercase and numbers";
+        valid = false;
+      }
+
+      let numEr = /^[0-9]{10}$/;
+      if (!num.match(numEr)) {
+        document.getElementById("numError").innerText = "enter valid number";
+        valid = false;
+      }
+
+      if (num === "") {
+        document.getElementById('numError').innerText = "number is mandatory"
+        valid = false
+      }
+
+
+      
+      if (pass === "") {
+        document.getElementById('passError').innerText = "password is manadatory";
+        valid = false;
+      }
+      if (pass.length < 6 || pass.length > 15) {
+        document.getElementById("passError").innerText =
+          "password contains  6 to 15 charcaters";
+        valid = false;
+      }
+
+      // if (pass.length > 15) {
+      //   document.getElementById("passError").innerText =
+      //     "password should not exceed 15 characters";
+      //   valid = false;
+      // }
+      if (!/(?=.*[A-Z])/.test(pass)) {
+        document.getElementById('passError').innerText = "password should contain uppercase";
+        valid = false;
+      }
+
+      if (pass != cpass) {
+        document.getElementById('cPassError').innerText = "password should match"
+        valid =  false
+      }
+
+      if (mail === "") {
+        document.getElementById('mailError').innerText = "mail id is mandatory";
+        valid = false;
+      }
+      let mailEr = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+      if (!mail.match(mailEr)) {
+        document.getElementById("mailError").innerText =
+          "enter valid mail Id";
+        valid = false;
+      }
+
+      if (valid) {
+        let userData = {
+          username: name,
+          password: pass,
+          Email: mail,
+          Number: num,
+
+        };
+        localStorage.setItem("signupData", JSON.stringify(userData));
+        alert("signup is Successfull");
+        location.href = "login.html";
+      }
+    });
+  </script>
+</body>
+
+</html>

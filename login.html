@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support - Expense Tracker</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="shortcut icon" href="logo.webp" type="image/x-icon">
+</head>
+
+<body>
+
+    <form action="">
+        <div>
+            <h1>Login</h1>
+        </div>
+        <div>
+            <label for="mail">Email</label>
+            <input type="email" name="mail" id="mail">
+            <span id="mailError" class="error"></span>
+            <br>
+            <label for="pass">Password</label>
+            <input type="text" name="pass" id="pass">
+            <span id="passError" class="error"></span>
+            <br>
+            <div id="btns">
+                <button type="submit">Login</button>
+                <button type="reset">Cancel</button>
+            </div>
+
+        </div>
+    </form>
+
+
+    <script>
+
+        let loginForm = document.querySelector('form')
+        loginForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            let mail = document.getElementById("mail").value.trim();
+            let pass = document.getElementById("pass").value.trim();
+
+            document.getElementById("mailError").innerText = "";
+            document.getElementById("passError").innerText = "";
+
+            let userData = JSON.parse(localStorage.getItem("signupData"));
+
+
+            let valid = true;
+            if (mail !== userData.Email) {
+                document.getElementById('mailError').innerText = "invalid mail id";
+                valid = false;
+            }
+            if (pass !== userData.password) {
+                document.getElementById('passError').innerText = "invalid password"
+                valid = false
+            }
+
+            if (valid) {
+                alert("login is Successfull");
+                location.href = "index.html"
+            }
+
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,106 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Background */
+body {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(200, 230, 255, 0.8));
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Form container */
+form {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  backdrop-filter: blur(10px); /* glass effect */
+}
+
+/* Hover effect */
+form:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.error {
+  color: #e74c3c;
+}
+
+/* Heading */
+form h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #4a90e2;
+}
+
+/* Labels */
+label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: 600;
+  color: #444;
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* Focus effect */
+input:focus {
+  border-color: #4a90e2;
+  box-shadow: 0px 0px 8px rgba(74, 144, 226, 0.4);
+}
+
+/* Buttons */
+button, a {
+  width: 48%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: #fff;
+}
+
+/* SignIn button */
+button:first-of-type {
+  background: rgba(74, 144, 226, 0.85); /* light blue */
+  margin-right: 4%;
+}
+
+/* Cancel button */
+button:last-of-type {
+  background: rgba(255, 99, 71, 0.85); /* light coral */
+}
+
+#btns {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+/* Hover effect for buttons */
+button:hover, a:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}

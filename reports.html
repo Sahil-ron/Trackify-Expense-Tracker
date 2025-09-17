@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Expense Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="logo.webp" type="image/x-icon">
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <img src="logo.webp" alt="User">
+            <ul class="menu">
+                <li><a href="index.html">🏠 Home</a></li>
+                <li><a href="expenses.html">💰 Expenses</a></li>
+                <li><a href="teams.html">👥 Teams</a></li>
+                <li><a href="approvals.html">✅ Approvals</a></li>
+                <li class="active"><a href="reports.html">📊 Reports</a></li>
+                <li><a href="support.html">📞 Support</a></li>
+                <li><a href="#" onclick="logout()">🔴 Logout</a></li>
+            </ul>
+        </div>
+
+        <div class="main">
+            <h2>Expense Reports</h2>
+
+            <div class="report-filters">
+                <div class="form-group">
+                    <label for="reportType">Report Type:</label>
+                    <select id="reportType">
+                        <option value="summary">Summary Report</option>
+                        <option value="detailed">Detailed Report</option>
+                        <option value="category">Category Breakdown</option>
+                        <option value="team">Team Member Report</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="dateFrom">From Date:</label>
+                    <input type="date" id="dateFrom">
+                </div>
+
+                <div class="form-group">
+                    <label for="dateTo">To Date:</label>
+                    <input type="date" id="dateTo">
+                </div>
+
+                <button onclick="generateReport()">Generate Report</button>
+                <button onclick="exportReport()">Export to CSV</button>
+            </div>
+
+            <div id="reportOutput"></div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function () {
+            // Set default dates (last 30 days)
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+
+            document.getElementById('dateTo').value = today.toISOString().split('T')[0];
+            document.getElementById('dateFrom').value = thirtyDaysAgo.toISOString().split('T')[0];
+
+            generateReport();
+        };
+
+        function generateReport() {
+            const reportType = document.getElementById('reportType').value;
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+
+            const approvedExpenses = JSON.parse(localStorage.getItem('approvedExpenses')) || [];
+            const pendingApprovals = JSON.parse(localStorage.getItem('pendingApprovals')) || [];
+            const rejectedExpenses = JSON.parse(localStorage.getItem('rejectedExpenses')) || [];
+
+            // Filter by date range if provided
+            let filteredApproved = approvedExpenses;
+            let filteredPending = pendingApprovals;
+            let filteredRejected = rejectedExpenses;
+
+            if (dateFrom && dateTo) {
+                const fromDate = new Date(dateFrom);
+                const toDate = new Date(dateTo);
+
+                filteredApproved = approvedExpenses.filter(exp => {
+                    const expDate = new Date(exp.date);
+                    return expDate >= fromDate && expDate <= toDate;
+                });
+
+                filteredPending = pendingApprovals.filter(exp => {
+                    const expDate = new Date(exp.date);
+                    return expDate >= fromDate && expDate <= toDate;
+                });
+
+                filteredRejected = rejectedExpenses.filter(exp => {
+                    const expDate = new Date(exp.date);
+                    return expDate >= fromDate && expDate <= toDate;
+                });
+            }
+
+            let reportHtml = '';
+
+            switch (reportType) {
+                case 'summary':
+                    reportHtml = generateSummaryReport(filteredApproved, filteredPending, filteredRejected);
+                    break;
+                case 'detailed':
+                    reportHtml = generateDetailedReport(filteredApproved, filteredPending, filteredRejected);
+                    break;
+                case 'category':
+                    reportHtml = generateCategoryReport(filteredApproved);
+                    break;
+                case 'team':
+                    reportHtml = generateTeamReport(filteredApproved);
+                    break;
+            }
+
+            document.getElementById('reportOutput').innerHTML = reportHtml;
+        }
+
+        function generateSummaryReport(approved, pending, rejected) {
+            const totalApproved = approved.reduce((sum, exp) => sum + Number(exp.amount), 0);
+            const totalPending = pending.reduce((sum, exp) => sum + Number(exp.amount), 0);
+            const totalRejected = rejected.reduce((sum, exp) => sum + Number(exp.amount), 0);
+
+            return `
+                <div class="report-summary">
+                    <h3>Summary Report</h3>
+                    <div class="summary-cards">
+                        <div class="summary-card approved">
+                            <h4>Approved Expenses</h4>
+                            <p class="amount">₹${totalApproved}</p>
+                            <p class="count">${approved.length} expenses</p>
+                        </div>
+                        <div class="summary-card pending">
+                            <h4>Pending Approval</h4>
+                            <p class="amount">₹${totalPending}</p>
+                            <p class="count">${pending.length} expenses</p>
+                        </div>
+                        <div class="summary-card rejected">
+                            <h4>Rejected Expenses</h4>
+                            <p class="amount">₹${totalRejected}</p>
+                            <p class="count">${rejected.length} expenses</p>
+                        </div>
+                        <div class="summary-card total">
+                            <h4>Total Expenses</h4>
+                            <p class="amount">₹${totalApproved}</p>
+                            <p class="count">${approved.length } expenses</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateDetailedReport(approved, pending, rejected) {
+            const allExpenses = [
+                ...approved.map(exp => ({ ...exp, status: 'Approved' })),
+                ...pending.map(exp => ({ ...exp, status: 'Pending' })),
+                ...rejected.map(exp => ({ ...exp, status: 'Rejected' }))
+            ].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (allExpenses.length === 0) {
+                return '<p class="no-data">No expenses found for the selected date range.</p>';
+            }
+
+            return `
+                <div class="detailed-report">
+                    <h3>Detailed Report</h3>
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Category</th>
+                                <th>Assigned To</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${allExpenses.map(exp => `
+                                <tr>
+                                    <td>${exp.date}</td>
+                                    <td>₹${exp.amount}</td>
+                                    <td>${exp.category}</td>
+                                    <td>${exp.assignedTo}</td>
+                                    <td>${exp.description}</td>
+                                    <td><span class="status status-${exp.status.toLowerCase()}">${exp.status}</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function generateCategoryReport(approved) {
+            const categoryTotals = approved.reduce((acc, exp) => {
+                acc[exp.category] = (acc[exp.category] || 0) + Number(exp.amount);
+                return acc;
+            }, {});
+
+            const categories = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1]);
+
+            if (categories.length === 0) {
+                return '<p class="no-data">No approved expenses found for category breakdown.</p>';
+            }
+
+            return `
+                <div class="category-report">
+                    <h3>Category Breakdown</h3>
+                    <div class="category-chart">
+                        ${categories.map(([category, amount]) => `
+                            <div class="category-item">
+                                <div class="category-name">${category}</div>
+                                <div class="category-amount">₹${amount}</div>
+                                <div class="category-bar">
+                                    <div class="category-fill" style="width: ${(amount / categories[0][1]) * 100}%"></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateTeamReport(approved) {
+            const teamTotals = approved.reduce((acc, exp) => {
+                if (!acc[exp.assignedTo]) {
+                    acc[exp.assignedTo] = { total: 0, count: 0 };
+                }
+                acc[exp.assignedTo].total += Number(exp.amount);
+                acc[exp.assignedTo].count += 1;
+                return acc;
+            }, {});
+
+            const teamData = Object.entries(teamTotals).sort((a, b) => b[1].total - a[1].total);
+
+            if (teamData.length === 0) {
+                return '<p class="no-data">No approved expenses found for team report.</p>';
+            }
+
+            return `
+                <div class="team-report">
+                    <h3>Team Member Report</h3>
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Team Member</th>
+                                <th>Total Amount</th>
+                                <th>Number of Expenses</th>
+                                <th>Average per Expense</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${teamData.map(([member, data]) => `
+                                <tr>
+                                    <td>${member}</td>
+                                    <td>₹${data.total}</td>
+                                    <td>${data.count}</td>
+                                    <td>₹${Math.round(data.total / data.count)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function exportReport() {
+            const approvedExpenses = JSON.parse(localStorage.getItem('approvedExpenses')) || [];
+            const pendingApprovals = JSON.parse(localStorage.getItem('pendingApprovals')) || [];
+            const rejectedExpenses = JSON.parse(localStorage.getItem('rejectedExpenses')) || [];
+
+            const allExpenses = [
+                ...approvedExpenses.map(exp => ({ ...exp, status: 'Approved' })),
+                ...pendingApprovals.map(exp => ({ ...exp, status: 'Pending' })),
+                ...rejectedExpenses.map(exp => ({ ...exp, status: 'Rejected' }))
+            ];
+
+            if (allExpenses.length === 0) {
+                alert('No data to export');
+                return;
+            }
+
+            const headers = ['Date', 'Amount', 'Category', 'Assigned To', 'Description', 'Status'];
+            const csvContent = [
+                headers.join(','),
+                ...allExpenses.map(exp => [
+                    exp.date,
+                    exp.amount,
+                    exp.category,
+                    exp.assignedTo,
+                    `"${exp.description}"`,
+                    exp.status
+                ].join(','))
+            ].join('\\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `expense_report_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+
+        //logout
+        function logout() {
+            let confirmLogout = confirm("Are you sure you want to log out?");
+            if (confirmLogout) {
+                // Clear stored data
+                localStorage.clear();
+
+                // Redirect to signup page
+                window.location.href = "signup.html";
+            } else {
+                // User canceled logout
+                return;
+            }
+        }
+        
+    </script>
+</body>
+
+</html>

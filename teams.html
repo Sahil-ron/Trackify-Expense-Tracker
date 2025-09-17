@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trackify</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="logo.webp" type="image/x-icon">
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <img src="logo.webp" alt="User">
+            <ul class="menu">
+                <li><a href="index.html">🏠 Home</a></li>
+                <li><a href="expenses.html">💰 Expenses</a></li>
+                <li class="active"><a href="teams.html">👥 Teams</a></li>
+                <li><a href="approvals.html">✅ Approvals</a></li>
+                <li><a href="reports.html">📊 Reports</a></li>
+                <li><a href="support.html">📞 Support</a></li>
+                <li><a href="#" onclick="logout()">🔴 Logout</a></li>
+            </ul>
+        </div>
+
+        <div class="main">
+            <h2>Team Management</h2>
+
+            <form id="teamForm" class="team-form">
+                <div class="form-group">
+                    <label for="memberName">Member Name *</label>
+                    <input type="text" id="memberName" placeholder="Enter member name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="memberEmail">Email *</label>
+                    <input type="email" id="memberEmail" placeholder="Enter email address" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="memberRole">Role *</label>
+                    <select id="memberRole" required>
+                        <option value="">Select role</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Developer">Developer</option>
+                        <option value="Designer">Designer</option>
+                        <option value="Analyst">Analyst</option>
+                        <option value="Intern">Intern</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <button type="submit">Add Team Member</button>
+            </form>
+
+            <div class="team-members">
+                <h3>Team Members (<span id="memberCount">0</span>):</h3>
+                <div id="teamList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function () {
+            loadTeamMembers();
+        };
+
+        function loadTeamMembers() {
+            const teamMembers = JSON.parse(localStorage.getItem('teamMembers')) || [];
+            const container = document.getElementById('teamList');
+            const countElement = document.getElementById('memberCount');
+
+            countElement.textContent = teamMembers.length;
+
+            if (teamMembers.length === 0) {
+                container.innerHTML = '<p class="no-data">No team members added yet.</p>';
+                return;
+            }
+
+            container.innerHTML = teamMembers.map((member, index) => `
+                <div class="team-member">
+                    <div class="member-info">
+                        <strong>${member.name}</strong>
+                        <br><small>${member.email} | ${member.role}</small>
+                        <br><small>Added: ${new Date(member.addedAt).toLocaleDateString()}</small>
+                    </div>
+                    <button class="remove-btn" onclick="removeMember(${index})">Remove</button>
+                </div>
+            `).join('');
+        }
+
+        function removeMember(index) {
+            if (confirm('Are you sure you want to remove this team member?')) {
+                let teamMembers = JSON.parse(localStorage.getItem('teamMembers')) || [];
+                teamMembers.splice(index, 1);
+                localStorage.setItem('teamMembers', JSON.stringify(teamMembers));
+                loadTeamMembers();
+            }
+        }
+
+        document.getElementById('teamForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const member = {
+                name: document.getElementById('memberName').value,
+                email: document.getElementById('memberEmail').value,
+                role: document.getElementById('memberRole').value,
+                addedAt: new Date().toISOString()
+            };
+
+            // Check if member already exists
+            let teamMembers = JSON.parse(localStorage.getItem('teamMembers')) || [];
+            const existingMember = teamMembers.find(m => m.email === member.email);
+
+            if (existingMember) {
+                alert('A team member with this email already exists!');
+                return;
+            }
+
+            teamMembers.push(member);
+            localStorage.setItem('teamMembers', JSON.stringify(teamMembers));
+
+            alert('Team member added successfully!');
+            document.getElementById('teamForm').reset();
+            loadTeamMembers();
+        });
+
+
+        //logout
+        function logout() {
+            let confirmLogout = confirm("Are you sure you want to log out?");
+            if (confirmLogout) {
+                // Clear stored data
+                localStorage.clear();
+
+                // Redirect to signup page
+                window.location.href = "signup.html";
+            } else {
+                // User canceled logout
+                return;
+            }
+        }
+        
+    </script>
+</body>
+
+</html>
